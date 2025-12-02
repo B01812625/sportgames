@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-pencil-fill me-2 text-primary"></i>Submit Competition Application</h2>
+    <p class="text-muted">Please select a competition and fill in the relevant information</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Competition Application Form</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('competitions.apply') }}" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+
+                    <!-- Select Competition -->
+                    <div class="mb-3">
+                        {{ form.competition_id.label(class="form-label fw-bold") }}
+                        {{ form.competition_id(class="form-select" + (" is-invalid" if form.competition_id.errors else "")) }}
+                        {% for error in form.competition_id.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Team Name -->
+                    <div class="mb-3">
+                        {{ form.team_name.label(class="form-label fw-bold") }}
+                        {{ form.team_name(class="form-control" + (" is-invalid" if form.team_name.errors else ""), placeholder="Leave blank for individual application") }}
+                        {% for error in form.team_name.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Application Document -->
+                    <div class="mb-3">
+                        {{ form.document.label(class="form-label fw-bold") }}
+                        {{ form.document(class="form-control" + (" is-invalid" if form.document.errors else "")) }}
+                        <div class="form-text">Supports PDF, Word, Excel formats; maximum 16MB</div>
+                        {% for error in form.document.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Additional Notes -->
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label fw-bold") }}
+                        {{ form.notes(class="form-control" + (" is-invalid" if form.notes.errors else ""), rows=3, placeholder="Optional: Add supplementary information about your application") }}
+                        {% for error in form.notes.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="d-grid gap-2 d-flex justify-content-between">
+                        <a href="{{ url_for('competitions.list') }}" class="btn btn-secondary">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

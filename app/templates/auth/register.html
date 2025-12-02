@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">User Registration</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.register') }}">
+                    {{ form.hidden_tag() }}
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label fw-bold") }}
+                        {% if form.username.errors %}
+                            {{ form.username(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.username(class="form-control") }}
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label fw-bold") }}
+                        {% if form.email.errors %}
+                            {{ form.email(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control") }}
+                        {% endif %}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label fw-bold") }}
+                        {% if form.password.errors %}
+                            {{ form.password(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.password(class="form-control") }}
+                        {% endif %}
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        {{ form.confirm_password.label(class="form-label fw-bold") }}
+                        {% if form.confirm_password.errors %}
+                            {{ form.confirm_password(class="form-control is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.confirm_password.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.confirm_password(class="form-control") }}
+                        {% endif %}
+                    </div>
+
+                    <!-- GDPR Consent (Key Modification: Manually render label) -->
+                    <div class="mb-3 form-check">
+                        {% if form.gdpr_consent.errors %}
+                            {{ form.gdpr_consent(class="form-check-input is-invalid") }}
+                        {% else %}
+                            {{ form.gdpr_consent(class="form-check-input") }}
+                        {% endif %}
+                        <!-- Manually splice privacy policy link, use url_for to generate correct path -->
+                        <label class="form-check-label" for="{{ form.gdpr_consent.id }}">
+                            I have read and agree to the <a href="{{ url_for('static', filename='docs/privacy.pdf') }}" target="_blank" class="text-primary">Privacy Policy</a>, and consent to the collection and use of my personal data in compliance with GDPR requirements
+                        </label>
+                        {% if form.gdpr_consent.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.gdpr_consent.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+
+                <hr class="my-3">
+                <div class="text-center">
+                    <small>Already have an account? <a href="{{ url_for('auth.login') }}">Log in now</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

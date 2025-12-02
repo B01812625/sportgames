@@ -1,0 +1,118 @@
+/* 全局样式补充 */
+body {
+    /* 补充字体兼容性：Windows(微软雅黑) + Mac(苹方) + 通用无衬线字体 */
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+    background-color: #f8f9fa;
+    color: #212529; /* 统一文本颜色，提升可读性 */
+}
+
+/* 卡片阴影优化：hover时阴影更自然，增加圆角过渡 */
+.card {
+    transition: box-shadow 0.3s ease, border-radius 0.3s ease;
+    border-radius: 0.5rem; /* 统一卡片圆角，适配Bootstrap */
+}
+.card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12); /* 优化阴影浓度，更显层次感 */
+}
+
+/* 表单标签样式：修正选择器（.form-label和.fw-bold是同一元素的两个类） */
+.form-label.fw-bold {
+    color: #212529;
+    margin-bottom: 0.375rem; /* 统一标签间距 */
+}
+
+/* 导航栏激活状态：适配Bootstrap导航栏结构，增加padding避免挤压 */
+.navbar .nav-link.active {
+    font-weight: 600; /* 比bold稍轻，更美观 */
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem; /* 统一内边距 */
+}
+/* 导航栏链接默认样式：hover时增加过渡 */
+.navbar .nav-link {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.navbar .nav-link:hover:not(.active) {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* 按钮悬停效果：优化过渡曲线，增加轻微缩放 */
+.btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* 更流畅的过渡曲线 */
+}
+.btn:hover {
+    transform: translateY(-1px); /* 轻微上浮，提升交互感 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 表格行悬停效果：优化背景色浓度，避免过于鲜艳 */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.04); /* 降低透明度，更柔和 */
+}
+
+/* 赛事卡片样式：确保卡片高度一致，内容垂直分布均匀 */
+.card.h-100 {
+    display: flex;
+    flex-direction: column;
+    height: 100% !important; /* 强制100%高度，避免卡片高度不一致 */
+}
+.card.h-100 .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.card.h-100 .card-text {
+    flex: 1; /* 让文本区域占满剩余空间，按钮固定在底部 */
+}
+
+/* 响应式调整：优化移动端显示，避免!important过度使用 */
+@media (max-width: 768px) {
+    .row-cols-lg-3 {
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: calc(-1 * var(--bs-gutter-y));
+        margin-right: calc(-0.5 * var(--bs-gutter-x));
+        margin-left: calc(-0.5 * var(--bs-gutter-x));
+    }
+    .row-cols-lg-3 > * {
+        flex: 0 0 auto;
+        width: 50%; /* 平板端每行2个卡片，替代!important */
+    }
+}
+
+@media (max-width: 576px) {
+    .row-cols-md-2 > * {
+        width: 100%; /* 移动端每行1个卡片，替代!important */
+    }
+    .card-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        margin-left: 0 !important; /* 仅此处保留!important，避免Bootstrap默认margin冲突 */
+    }
+    /* 移动端表单元素：增加内边距，提升触摸体验 */
+    .form-control, .form-select, .btn {
+        padding: 0.625rem 0.75rem;
+        font-size: 1rem;
+    }
+}
+
+/* 补充：表单验证状态样式，统一错误提示颜色 */
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.1);
+}
+
+/* 补充：页面标题样式，统一间距 */
+.page-title {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    color: #198754; /* 主题色，可根据需求调整 */
+}

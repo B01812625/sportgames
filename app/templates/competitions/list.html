@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-trophy-fill me-2 text-primary"></i>Competition List</h2>
+    <p class="text-muted">Browse available competitions and submit your application</p>
+</div>
+
+{% if competitions %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for competition in competitions %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ competition.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ competition.category }}</h6>
+                        <p class="card-text">{{ competition.description[:100] }}...</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="bi bi-calendar-check me-2"></i>Event Date: {{ competition.start_date.strftime('%Y-%m-%d %H:%M') }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-clock me-2"></i>Deadline: {{ competition.application_deadline.strftime('%Y-%m-%d %H:%M') }}
+                        </li>
+                        <li class="list-group-item">
+                            {% if competition.is_open_for_application %}
+                                <span class="badge bg-success">Open for Registration</span>
+                            {% else %}
+                                <span class="badge bg-danger">Registration Closed</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ url_for('competitions.detail', comp_id=competition.id) }}" class="btn btn-outline-primary btn-sm">
+                            View Details
+                        </a>
+                        {% if current_user.is_authenticated and competition.is_open_for_application %}
+                            <a href="{{ url_for('competitions.apply') }}" class="btn btn-primary btn-sm ms-2">
+                                Apply Now
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-info-circle fs-3 me-2"></i>
+        <span>No competition data available. Please try again later.</span>
+    </div>
+{% endif %}
+{% endblock %}

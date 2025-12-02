@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-list-check me-2 text-primary"></i>My Applications</h2>
+    <p class="text-muted">View the status and details of all your competition applications</p>
+</div>
+
+{% if applications %}
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Competition</th>
+                        <th>Submission Date</th>
+                        <th>Team Name</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                        <tr>
+                            <td>{{ app.competition.name }}</td>
+                            <td>{{ app.submission_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ app.team_name or 'Individual' }}</td>
+                            <td>
+                                {% if app.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif app.status == 'approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('competitions.application_detail', app_id=app.id) }}" class="btn btn-outline-primary btn-sm">
+                                    View Details
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-info-circle fs-3 me-2"></i>
+        <span>You have no competition applications yet. <a href="{{ url_for('competitions.list') }}">Browse competitions to apply</a></span>
+    </div>
+{% endif %}
+{% endblock %}

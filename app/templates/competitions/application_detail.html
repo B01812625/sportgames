@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-list-check me-2 text-primary"></i>Application Detail</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('competitions.my_applications') }}">My Applications</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Application Detail</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Application Information</h5>
+                    <span class="badge
+                        {% if application.status == 'pending' %}bg-warning{% elif application.status == 'approved' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ application.status|capitalize }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Competition Name:</div>
+                    <div class="col-md-8">{{ application.competition.name }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Competition Category:</div>
+                    <div class="col-md-8">{{ application.competition.category }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Submission Date:</div>
+                    <div class="col-md-8">{{ application.submission_date.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Application Type:</div>
+                    <div class="col-md-8">{{ 'Team Application' if application.team_name else 'Individual Application' }}</div>
+                </div>
+                {% if application.team_name %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Team Name:</div>
+                        <div class="col-md-8">{{ application.team_name }}</div>
+                    </div>
+                {% endif %}
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Application Document:</div>
+                    <div class="col-md-8">
+                        {% if application.document_filename %}
+                            <a href="{{ url_for('static', filename='uploads/' + str(current_user.id) + '/' + application.document_filename) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-download me-1"></i> Download Document
+                            </a>
+                        {% else %}
+                            <span class="text-muted">No uploaded document</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Additional Notes:</div>
+                    <div class="col-md-8">{{ application.notes or 'None' }}</div>
+                </div>
+                {% if application.status != 'pending' %}
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Review Date:</div>
+                        <div class="col-md-8">{{ application.approved_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 fw-bold">Review Notes:</div>
+                        <div class="col-md-8">{{ application.notes or 'None' }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info mb-3">
+                    <p class="mb-0"><i class="bi bi-info-circle me-1"></i> Applications cannot be modified after submission. Please wait for review patiently.</p>
+                </div>
+                <a href="{{ url_for('competitions.my_applications') }}" class="btn btn-outline-primary w-100 mb-3">
+                    Return to Applications List
+                </a>
+                <a href="{{ url_for('competitions.list') }}" class="btn btn-primary w-100">
+                    Browse More Competitions
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

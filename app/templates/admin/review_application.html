@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-clipboard-check me-2 text-primary"></i>Review Application</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.application_list') }}">Application Management</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Review Application #{{ application.id }}</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <!-- 申请详情卡片 -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Application Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">Applicant:</div>
+                    <div class="col-8">{{ application.user.username }} ({{ application.user.email }})</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">Competition:</div>
+                    <div class="col-8">{{ application.competition.name }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">Application Type:</div>
+                    <div class="col-8">
+                        {% if application.team_name and application.team_name.strip() %}
+                            Team: {{ application.team_name }}
+                        {% else %}
+                            Individual
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">Submission Date:</div>
+                    <div class="col-8">{{ application.submission_date.strftime('%Y-%m-%d %H:%M') }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">Current Status:</div>
+                    <div class="col-8">
+                        {% if application.status == 'pending' %}
+                            <span class="badge bg-warning">Pending Review</span>
+                        {% elif application.status == 'approved' %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif application.status == 'rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if application.approved_at %}
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">Reviewed At:</div>
+                    <div class="col-8">{{ application.approved_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                </div>
+                {% endif %}
+                {% if application.document_filename %}
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">Submitted File:</div>
+                    <div class="col-8">
+                        <a href="{{ url_for('admin.download_application_file', app_id=application.id) }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-download me-1"></i> Download File
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 审核表单卡片 -->
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Review & Update Status</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.review_application', app_id=application.id) }}">
+                    {{ form.hidden_tag() }}
+
+                    <!-- 审核状态 -->
+                    <div class="mb-3">
+                        {{ form.status.label(class="form-label fw-bold") }}
+                        {{ form.status(class="form-select" + (" is-invalid" if form.status.errors else "")) }}
+                        {% for error in form.status.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- 审核备注 -->
+                    <div class="mb-3">
+                        {{ form.notes.label(class="form-label fw-bold") }}
+                        {{ form.notes(class="form-control" + (" is-invalid" if form.notes.errors else ""), rows=4, placeholder="Enter review notes (optional)") }}
+                        <div class="form-text">Notes will be visible to the applicant (if needed)</div>
+                        {% for error in form.notes.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- 提交按钮 -->
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('admin.application_list', status=application.status) }}" class="btn btn-secondary">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-trophy-fill me-2 text-primary"></i>{{ competition.name }}</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('competitions.list') }}">Competition List</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ competition.name }}</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Competition Details</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text"><strong>Category:</strong>{{ competition.category }}</p>
+                <p class="card-text"><strong>Event Date:</strong>{{ competition.start_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p class="card-text"><strong>Application Deadline:</strong>{{ competition.application_deadline.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p class="card-text"><strong>Registration Status:</strong>
+                    {% if competition.is_open_for_application %}
+                        <span class="badge bg-success">Open for Registration</span>
+                    {% else %}
+                        <span class="badge bg-danger">Registration Closed</span>
+                    {% endif %}
+                </p>
+                <hr>
+                <p class="card-text"><strong>Competition Rules:</strong></p>
+                <div class="card-text">
+                    {{ competition.description|replace('\n', '<br>')|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Guidelines</h5>
+            </div>
+            <div class="card-body">
+                {% if current_user.is_authenticated %}
+                    {% if competition.is_open_for_application %}
+                        <!-- Check if user has already applied -->
+                        {% set has_applied = current_user.applications.filter_by(competition_id=competition.id).first() %}
+                        {% if has_applied %}
+                            <div class="alert alert-success text-center mb-3">
+                                <i class="bi bi-check-circle fs-2 me-1"></i>
+                                <span>You have already applied for this competition</span>
+                            </div>
+                            <a href="{{ url_for('competitions.my_applications') }}" class="btn btn-outline-primary w-100">
+                                View My Applications
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('competitions.apply') }}" class="btn btn-primary w-100 mb-3">
+                                <i class="bi bi-pencil-fill me-1"></i> Apply Now
+                            </a>
+                            <div class="alert alert-info">
+                                <p class="mb-0"><i class="bi bi-info-circle me-1"></i> Relevant documents are required for application. Please prepare in advance.</p>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-danger text-center mb-3">
+                            <i class="bi bi-clock fs-2 me-1"></i>
+                            <span>Registration has closed</span>
+                        </div>
+                        <a href="{{ url_for('competitions.list') }}" class="btn btn-outline-primary w-100">
+                            Return to Competition List
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-info text-center mb-3">
+                        <i class="bi bi-person-fill fs-2 me-1"></i>
+                        <span>Please log in to apply</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('auth.login', next=url_for('competitions.detail', comp_id=competition.id)) }}" class="btn btn-primary">
+                            Log In
+                        </a>
+                        <a href="{{ url_for('auth.register', next=url_for('competitions.detail', comp_id=competition.id)) }}" class="btn btn-outline-primary">
+                            Register
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

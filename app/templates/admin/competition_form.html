@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-trophy-fill me-2 text-primary"></i>
+        {% if competition %}Edit Competition: {{ competition.name }}{% else %}Create New Competition{% endif %}
+    </h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.competition_list') }}">Competition Management</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {% if competition %}Edit Competition{% else %}Create Competition{% endif %}
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">{% if competition %}Edit Competition Details{% else %}Enter Competition Details{% endif %}</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.edit_competition', comp_id=competition.id) if competition else url_for('admin.create_competition') }}">
+                    {{ form.hidden_tag() }}
+
+                    <!-- Competition Name -->
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label fw-bold") }}
+                        {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                        {% for error in form.name.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Competition Category -->
+                    <div class="mb-3">
+                        {{ form.category.label(class="form-label fw-bold") }}
+                        {{ form.category(class="form-select" + (" is-invalid" if form.category.errors else "")) }}
+                        {% for error in form.category.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Event Date -->
+                    <div class="mb-3">
+                        {{ form.start_date.label(class="form-label fw-bold") }}
+                        {{ form.start_date(class="form-control" + (" is-invalid" if form.start_date.errors else ""), type="datetime-local") }}
+                        <div class="form-text">Format: YYYY-MM-DD HH:MM</div>
+                        {% for error in form.start_date.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Application Deadline -->
+                    <div class="mb-3">
+                        {{ form.application_deadline.label(class="form-label fw-bold") }}
+                        {{ form.application_deadline(class="form-control" + (" is-invalid" if form.application_deadline.errors else ""), type="datetime-local") }}
+                        <div class="form-text">Deadline must be before the event date</div>
+                        {% for error in form.application_deadline.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Competition Description -->
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label fw-bold") }}
+                        {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows=8) }}
+                        <div class="form-text">Please provide detailed information about competition rules and requirements</div>
+                        {% for error in form.description.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="d-grid gap-2 d-flex justify-content-between">
+                        <a href="{{ url_for('admin.competition_list') }}" class="btn btn-secondary">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<!-- DateTime Format Conversion Script -->
+<script>
+    // Convert Python datetime object to datetime-local format (ISO 8601)
+    document.addEventListener('DOMContentLoaded', function() {
+        const startDateInput = document.querySelector('input[name="start_date"]');
+        const deadlineInput = document.querySelector('input[name="application_deadline"]');
+
+        // Convert existing date format for edit page
+        if (startDateInput.value) {
+            const startDate = new Date(startDateInput.value);
+            startDateInput.value = startDate.toISOString().slice(0, 16);
+        }
+        
+        if (deadlineInput.value) {
+            const deadlineDate = new Date(deadlineInput.value);
+            deadlineInput.value = deadlineDate.toISOString().slice(0, 16);
+        }
+    });
+</script>
+{% endblock %}
+
+{% endblock %}

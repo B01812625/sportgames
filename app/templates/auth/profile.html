@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-person-fill me-2"></i>Profile</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-4 fw-bold">Username:</div>
+                    <div class="col-md-8">{{ current_user.username }}</div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-4 fw-bold">Email:</div>
+                    <div class="col-md-8">{{ current_user.email }}</div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-4 fw-bold">Registration Date:</div>
+                    <div class="col-md-8">{{ current_user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-4 fw-bold">Data Collection Consent:</div>
+                    <div class="col-md-8">
+                        <span class="badge bg-success">Consented</span> (Complies with GDPR requirements)
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <a href="{{ url_for('auth.delete_account') }}" class="btn btn-danger">
+                        <i class="bi bi-trash-fill me-1"></i> Delete Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
