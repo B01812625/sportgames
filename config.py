@@ -5,7 +5,7 @@ class Config:
     # 密钥（用于CSRF保护、Session加密）
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'phg-2025-secret-key-keep-safe'
     # 数据库配置（SQLite，无需额外安装数据库，文件存储）
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///phg.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///phg.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # 关闭不必要的警告
     # 上传文件配置（参赛申请可上传材料）
     UPLOAD_FOLDER = os.path.join(os.getcwd(), 'app', 'static', 'uploads')
